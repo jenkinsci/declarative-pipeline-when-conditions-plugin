@@ -29,9 +29,7 @@ import hudson.model.Run;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.pipeline.StageStatus;
-import org.jenkinsci.plugins.pipeline.modeldefinition.Utils;
 import org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTWhenContent;
-import org.jenkinsci.plugins.pipeline.modeldefinition.parser.ASTParserUtils;
 import org.jenkinsci.plugins.pipeline.modeldefinition.when.DeclarativeStageConditional;
 import org.jenkinsci.plugins.pipeline.modeldefinition.when.DeclarativeStageConditionalDescriptor;
 import org.jenkinsci.plugins.workflow.actions.TagsAction;
@@ -47,7 +45,10 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
-import static org.jenkinsci.plugins.pipeline.modeldefinition.Utils.getStageStatusMetadata;
+import static org.jenkinsci.plugins.pipeline.StageTagsUtils.getStageStatusMetadata;
+import static org.jenkinsci.plugins.pipeline.modeldefinition.DeclarativeExtensionUtils.transformWhenContentToRuntimeAST;
+import static org.jenkinsci.plugins.pipeline.modeldefinition.parser.ASTParserUtils.findStageFlowNodes;
+
 
 public class StageHasRunConditional extends DeclarativeStageConditional<StageHasRunConditional> {
     private final String stageName;
@@ -66,7 +67,7 @@ public class StageHasRunConditional extends DeclarativeStageConditional<StageHas
         if (rawRun instanceof WorkflowRun) {
             FlowExecution execution = ((WorkflowRun) rawRun).getExecution();
             if (execution != null) {
-                List<FlowNode> stageNodes = Utils.findStageFlowNodes(stageName, execution);
+                List<FlowNode> stageNodes = findStageFlowNodes(stageName, execution);
 
                 // If there are any stages we've run or are running by this name...
                 if (!stageNodes.isEmpty()) {
@@ -100,7 +101,7 @@ public class StageHasRunConditional extends DeclarativeStageConditional<StageHas
     public static class DescriptorImpl extends DeclarativeStageConditionalDescriptor<StageHasRunConditional> {
         @Override
         public Expression transformToRuntimeAST(@CheckForNull ModelASTWhenContent original) {
-            return ASTParserUtils.transformWhenContentToRuntimeAST(original);
+            return transformWhenContentToRuntimeAST(original);
         }
     }
 
