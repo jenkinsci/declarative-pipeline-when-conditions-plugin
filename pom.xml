@@ -13,7 +13,7 @@
     <properties>
         <jenkins.version>2.7.3</jenkins.version>
         <declarative.version>1.2.6</declarative.version>
-        <git.version>3.5.1</git.version>
+        <git.version>4.11.5</git.version>
         <scm-api.version>2.2.2</scm-api.version>
     </properties>
     <name>Declarative Pipeline: Additional When Conditions Plugin</name>
